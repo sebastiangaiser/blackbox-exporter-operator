@@ -8,6 +8,11 @@
   "postUpdateOptions": [
     "gomodTidy"
   ],
+  "commitBody": "Signed-off-by: Sebastian Gaiser <sebastiangaiser@users.noreply.github.com>",
+  "labels": [
+    "renovate"
+  ],
+  "timezone": "Europe/Berlin",
   "customManagers": [
     {
       "customType": "regex",
