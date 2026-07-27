@@ -1,0 +1,21 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxProbe
+metadata:
+  name: ingress-monitor
+  namespace: monitoring
+spec:
+  exporterRef:
+    name: main
+  moduleRef:
+    name: http-2xx
+    namespace: monitoring
+  ingress:
+    selector:
+      matchLabels:
+        monitoring: "true"
+    namespaceSelector:
+      any: true
+  interval: 60s
+  scrapeTimeout: 10s
+  additionalLabels:
+    source: ingress-discovery

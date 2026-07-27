@@ -1,0 +1,13 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxExporter
+metadata:
+  name: icmp-capable
+  namespace: monitoring
+spec:
+  replicas: 1
+  enableICMP: true
+  moduleSelector:
+    namespaceSelector:
+      any: true
+    matchLabels:
+      exporter: icmp-capable

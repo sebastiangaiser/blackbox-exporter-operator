@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "blackbox-exporter-operator.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "blackbox-exporter-operator.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "blackbox-exporter-operator.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "blackbox-exporter-operator.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "blackbox-exporter-operator.serviceAccountName" . }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: manager
+          image: {{ include "blackbox-exporter-operator.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --health-probe-bind-address=:8081
+            {{- if .Values.leaderElection.enabled }}
+            - --leader-elect
+            {{- end }}
+            {{- if .Values.webhook.enabled }}
+            - --webhook-cert-path=/tmp/k8s-webhook-server/serving-certs
+            {{- end }}
+          ports:
+            - name: health
+              containerPort: 8081
+              protocol: TCP
+            {{- if .Values.webhook.enabled }}
+            - name: webhook
+              containerPort: 9443
+              protocol: TCP
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: health
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          {{- if .Values.webhook.enabled }}
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /tmp/k8s-webhook-server/serving-certs
+              readOnly: true
+          {{- end }}
+      {{- if .Values.webhook.enabled }}
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: {{ include "blackbox-exporter-operator.fullname" . }}-webhook-cert
+      {{- end }}
+      terminationGracePeriodSeconds: 10
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

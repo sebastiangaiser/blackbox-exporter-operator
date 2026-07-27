@@ -1,0 +1,14 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxModule
+metadata:
+  name: grpc-health
+  namespace: monitoring
+  labels:
+    exporter: main
+spec:
+  timeout: 5s
+  grpc:
+    service: grpc.health.v1.Health
+    tls: true
+    tlsConfig:
+      insecureSkipVerify: false

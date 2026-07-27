@@ -1,0 +1,13 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxProbe
+metadata:
+  name: ssh-hosts
+  namespace: monitoring
+spec:
+  exporterRef:
+    name: main
+  moduleRef:
+    name: ssh-banner
+  targets:
+    - bastion.example.com:22
+  interval: 60s

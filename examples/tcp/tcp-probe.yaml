@@ -1,0 +1,14 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxProbe
+metadata:
+  name: database-ports
+  namespace: monitoring
+spec:
+  exporterRef:
+    name: main
+  moduleRef:
+    name: tcp-connect
+  targets:
+    - postgres.db.svc.cluster.local:5432
+    - redis.cache.svc.cluster.local:6379
+  interval: 30s

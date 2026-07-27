@@ -1,0 +1,12 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxExporter
+metadata:
+  name: shared
+  namespace: monitoring
+spec:
+  replicas: 2
+  moduleSelector:
+    namespaceSelector:
+      any: true
+    matchLabels:
+      exporter: shared

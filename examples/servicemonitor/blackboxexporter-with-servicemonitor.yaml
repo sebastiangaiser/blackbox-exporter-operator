@@ -1,0 +1,17 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxExporter
+metadata:
+  name: main
+  namespace: monitoring
+spec:
+  replicas: 2
+  serviceMonitor:
+    enabled: true
+    interval: 15s
+    labels:
+      prometheus: kube-prometheus
+  moduleSelector:
+    namespaceSelector:
+      any: true
+    matchLabels:
+      exporter: main

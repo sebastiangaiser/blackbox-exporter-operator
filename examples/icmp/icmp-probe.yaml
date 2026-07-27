@@ -1,0 +1,14 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxProbe
+metadata:
+  name: ping-hosts
+  namespace: monitoring
+spec:
+  exporterRef:
+    name: icmp-capable
+  moduleRef:
+    name: icmp-ping
+  targets:
+    - 10.0.0.1
+    - 192.168.1.1
+  interval: 30s

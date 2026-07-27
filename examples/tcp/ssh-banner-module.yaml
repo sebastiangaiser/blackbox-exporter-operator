@@ -1,0 +1,13 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxModule
+metadata:
+  name: ssh-banner
+  namespace: monitoring
+  labels:
+    exporter: main
+spec:
+  timeout: 5s
+  tcp:
+    queryResponse:
+      - expect: "^SSH-2.0-"
+    preferredIPProtocol: ip4

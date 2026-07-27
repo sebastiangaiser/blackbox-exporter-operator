@@ -1,0 +1,13 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxProbe
+metadata:
+  name: dns-check
+  namespace: monitoring
+spec:
+  exporterRef:
+    name: main
+  moduleRef:
+    name: dns-a-check
+  targets:
+    - dns.example.com:53
+  interval: 120s

@@ -1,0 +1,13 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxModule
+metadata:
+  name: icmp-ping
+  namespace: monitoring
+  labels:
+    exporter: icmp-capable
+spec:
+  timeout: 5s
+  icmp:
+    preferredIPProtocol: ip4
+    payloadSize: 56
+    ttl: 64

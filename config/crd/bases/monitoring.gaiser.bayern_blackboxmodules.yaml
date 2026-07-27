@@ -1,0 +1,734 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.19.0
+  name: blackboxmodules.monitoring.gaiser.bayern
+spec:
+  group: monitoring.gaiser.bayern
+  names:
+    kind: BlackboxModule
+    listKind: BlackboxModuleList
+    plural: blackboxmodules
+    singular: blackboxmodule
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.prober
+      name: Prober
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: BlackboxModule is the Schema for the blackboxmodules API.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: |-
+              BlackboxModuleSpec defines the desired state of BlackboxModule.
+              Exactly one prober configuration must be set. The prober type is inferred
+              from which section is present.
+            properties:
+              dns:
+                description: dns configures a DNS prober.
+                properties:
+                  dnsOverTLS:
+                    description: dnsOverTLS enables DNS over TLS.
+                    type: boolean
+                  preferredIPProtocol:
+                    description: preferredIPProtocol is the preferred IP protocol
+                      version.
+                    enum:
+                    - ip4
+                    - ip6
+                    type: string
+                  queryClass:
+                    default: IN
+                    description: queryClass is the DNS query class.
+                    type: string
+                  queryName:
+                    description: queryName is the DNS name to query.
+                    type: string
+                  queryType:
+                    default: A
+                    description: queryType is the DNS query type.
+                    enum:
+                    - A
+                    - AAAA
+                    - CNAME
+                    - MX
+                    - NS
+                    - SOA
+                    - TXT
+                    - SRV
+                    - PTR
+                    type: string
+                  recursionDesired:
+                    default: true
+                    description: recursionDesired sets the RD flag in DNS queries.
+                    type: boolean
+                  transportProtocol:
+                    default: udp
+                    description: transportProtocol is the DNS transport protocol.
+                    enum:
+                    - udp
+                    - tcp
+                    type: string
+                  validRcodes:
+                    description: validRcodes is a list of acceptable DNS response
+                      codes.
+                    items:
+                      type: string
+                    type: array
+                  validateAdditional:
+                    description: validateAdditional defines validation rules for the
+                      additional section.
+                    properties:
+                      failIfMatchesRegexp:
+                        description: failIfMatchesRegexp fails the probe if any entry
+                          matches these regexps.
+                        items:
+                          type: string
+                        type: array
+                      failIfNotMatchesRegexp:
+                        description: failIfNotMatchesRegexp fails the probe if no
+                          entry matches these regexps.
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  validateAnswer:
+                    description: validateAnswer defines validation rules for the answer
+                      section.
+                    properties:
+                      failIfMatchesRegexp:
+                        description: failIfMatchesRegexp fails the probe if any entry
+                          matches these regexps.
+                        items:
+                          type: string
+                        type: array
+                      failIfNotMatchesRegexp:
+                        description: failIfNotMatchesRegexp fails the probe if no
+                          entry matches these regexps.
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  validateAuthority:
+                    description: validateAuthority defines validation rules for the
+                      authority section.
+                    properties:
+                      failIfMatchesRegexp:
+                        description: failIfMatchesRegexp fails the probe if any entry
+                          matches these regexps.
+                        items:
+                          type: string
+                        type: array
+                      failIfNotMatchesRegexp:
+                        description: failIfNotMatchesRegexp fails the probe if no
+                          entry matches these regexps.
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                required:
+                - queryName
+                type: object
+              grpc:
+                description: grpc configures a gRPC prober.
+                properties:
+                  preferredIPProtocol:
+                    description: preferredIPProtocol is the preferred IP protocol
+                      version.
+                    enum:
+                    - ip4
+                    - ip6
+                    type: string
+                  service:
+                    description: service is the gRPC service name to check.
+                    type: string
+                  tls:
+                    description: tls enables TLS for the gRPC connection.
+                    type: boolean
+                  tlsConfig:
+                    description: tlsConfig configures TLS settings.
+                    properties:
+                      caRef:
+                        description: caRef references a Secret containing the CA certificate.
+                        properties:
+                          key:
+                            description: key within the Secret.
+                            type: string
+                          name:
+                            description: name of the Secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      certRef:
+                        description: certRef references a Secret containing the client
+                          certificate.
+                        properties:
+                          key:
+                            description: key within the Secret.
+                            type: string
+                          name:
+                            description: name of the Secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      insecureSkipVerify:
+                        description: insecureSkipVerify disables TLS certificate verification.
+                        type: boolean
+                      keyRef:
+                        description: keyRef references a Secret containing the client
+                          key.
+                        properties:
+                          key:
+                            description: key within the Secret.
+                            type: string
+                          name:
+                            description: name of the Secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      maxVersion:
+                        description: maxVersion sets the maximum TLS version.
+                        enum:
+                        - TLS10
+                        - TLS11
+                        - TLS12
+                        - TLS13
+                        type: string
+                      minVersion:
+                        description: minVersion sets the minimum TLS version.
+                        enum:
+                        - TLS10
+                        - TLS11
+                        - TLS12
+                        - TLS13
+                        type: string
+                      serverName:
+                        description: serverName specifies the hostname for SNI.
+                        type: string
+                    type: object
+                type: object
+              http:
+                description: http configures an HTTP prober.
+                properties:
+                  basicAuth:
+                    description: basicAuth configures HTTP basic authentication.
+                    properties:
+                      passwordRef:
+                        description: passwordRef references a Secret key containing
+                          the password.
+                        properties:
+                          key:
+                            description: key within the Secret.
+                            type: string
+                          name:
+                            description: name of the Secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      username:
+                        description: username for basic auth.
+                        type: string
+                    required:
+                    - passwordRef
+                    - username
+                    type: object
+                  body:
+                    description: body is the request body for POST/PUT requests.
+                    type: string
+                  bodySizeLimit:
+                    description: bodySizeLimit limits the response body size in bytes.
+                      0 means no limit.
+                    format: int64
+                    type: integer
+                  failIfBodyMatchesRegexp:
+                    description: failIfBodyMatchesRegexp fails the probe if the body
+                      matches any of these regexps.
+                    items:
+                      type: string
+                    type: array
+                  failIfBodyNotMatchesRegexp:
+                    description: failIfBodyNotMatchesRegexp fails the probe if the
+                      body does not match any of these regexps.
+                    items:
+                      type: string
+                    type: array
+                  failIfHeaderMatchesRegexp:
+                    description: failIfHeaderMatchesRegexp fails the probe if a header
+                      matches.
+                    items:
+                      description: HeaderMatchConfig configures HTTP header matching.
+                      properties:
+                        allowMissing:
+                          description: allowMissing allows the header to be absent.
+                          type: boolean
+                        header:
+                          description: header is the HTTP header name.
+                          type: string
+                        regexp:
+                          description: regexp is the regular expression to match against.
+                          type: string
+                      required:
+                      - header
+                      - regexp
+                      type: object
+                    type: array
+                  failIfHeaderNotMatchesRegexp:
+                    description: failIfHeaderNotMatchesRegexp fails the probe if a
+                      header does not match.
+                    items:
+                      description: HeaderMatchConfig configures HTTP header matching.
+                      properties:
+                        allowMissing:
+                          description: allowMissing allows the header to be absent.
+                          type: boolean
+                        header:
+                          description: header is the HTTP header name.
+                          type: string
+                        regexp:
+                          description: regexp is the regular expression to match against.
+                          type: string
+                      required:
+                      - header
+                      - regexp
+                      type: object
+                    type: array
+                  failIfNotSSL:
+                    description: failIfNotSSL fails the probe if the response is not
+                      served over SSL.
+                    type: boolean
+                  failIfSSL:
+                    description: failIfSSL fails the probe if the response is served
+                      over SSL.
+                    type: boolean
+                  followRedirects:
+                    default: true
+                    description: followRedirects controls whether to follow HTTP redirects.
+                    type: boolean
+                  headers:
+                    additionalProperties:
+                      type: string
+                    description: headers are additional HTTP headers to send.
+                    type: object
+                  method:
+                    default: GET
+                    description: method is the HTTP method to use.
+                    type: string
+                  oauth2:
+                    description: oauth2 configures OAuth2 client credentials.
+                    properties:
+                      clientID:
+                        description: clientID is the OAuth2 client ID.
+                        type: string
+                      clientSecretRef:
+                        description: clientSecretRef references a Secret key containing
+                          the client secret.
+                        properties:
+                          key:
+                            description: key within the Secret.
+                            type: string
+                          name:
+                            description: name of the Secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      scopes:
+                        description: scopes is a list of OAuth2 scopes.
+                        items:
+                          type: string
+                        type: array
+                      tokenURL:
+                        description: tokenURL is the OAuth2 token endpoint.
+                        type: string
+                    required:
+                    - clientID
+                    - clientSecretRef
+                    - tokenURL
+                    type: object
+                  preferredIPProtocol:
+                    description: preferredIPProtocol is the preferred IP protocol
+                      version.
+                    enum:
+                    - ip4
+                    - ip6
+                    type: string
+                  proxyURL:
+                    description: proxyURL is the HTTP proxy to use.
+                    type: string
+                  tlsConfig:
+                    description: tlsConfig configures TLS for the HTTP request.
+                    properties:
+                      caRef:
+                        description: caRef references a Secret containing the CA certificate.
+                        properties:
+                          key:
+                            description: key within the Secret.
+                            type: string
+                          name:
+                            description: name of the Secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      certRef:
+                        description: certRef references a Secret containing the client
+                          certificate.
+                        properties:
+                          key:
+                            description: key within the Secret.
+                            type: string
+                          name:
+                            description: name of the Secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      insecureSkipVerify:
+                        description: insecureSkipVerify disables TLS certificate verification.
+                        type: boolean
+                      keyRef:
+                        description: keyRef references a Secret containing the client
+                          key.
+                        properties:
+                          key:
+                            description: key within the Secret.
+                            type: string
+                          name:
+                            description: name of the Secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      maxVersion:
+                        description: maxVersion sets the maximum TLS version.
+                        enum:
+                        - TLS10
+                        - TLS11
+                        - TLS12
+                        - TLS13
+                        type: string
+                      minVersion:
+                        description: minVersion sets the minimum TLS version.
+                        enum:
+                        - TLS10
+                        - TLS11
+                        - TLS12
+                        - TLS13
+                        type: string
+                      serverName:
+                        description: serverName specifies the hostname for SNI.
+                        type: string
+                    type: object
+                  validHTTPVersions:
+                    description: validHTTPVersions is a list of accepted HTTP versions.
+                    items:
+                      type: string
+                    type: array
+                  validStatusCodes:
+                    description: validStatusCodes is a list of accepted HTTP status
+                      codes. Defaults to 2xx.
+                    items:
+                      type: integer
+                    type: array
+                type: object
+              icmp:
+                description: |-
+                  icmp configures an ICMP prober.
+                  Requires CAP_NET_RAW which is not available under the restricted Pod Security Standard.
+                properties:
+                  dontFragment:
+                    description: dontFragment sets the DF bit in the IP header.
+                    type: boolean
+                  payloadSize:
+                    description: payloadSize is the ICMP payload size in bytes.
+                    type: integer
+                  preferredIPProtocol:
+                    default: ip4
+                    description: preferredIPProtocol is the preferred IP protocol
+                      version.
+                    enum:
+                    - ip4
+                    - ip6
+                    type: string
+                  sourceIPAddress:
+                    description: sourceIPAddress is the source IP address for ICMP
+                      packets.
+                    type: string
+                  ttl:
+                    description: ttl sets the IP Time To Live.
+                    maximum: 255
+                    minimum: 0
+                    type: integer
+                type: object
+              tcp:
+                description: tcp configures a TCP prober.
+                properties:
+                  preferredIPProtocol:
+                    description: preferredIPProtocol is the preferred IP protocol
+                      version.
+                    enum:
+                    - ip4
+                    - ip6
+                    type: string
+                  queryResponse:
+                    description: queryResponse defines the expected query-response
+                      pairs.
+                    items:
+                      description: QueryResponseConfig defines a TCP/Unix query-response
+                        pair.
+                      properties:
+                        expect:
+                          description: expect is the regular expression to match the
+                            response against.
+                          type: string
+                        send:
+                          description: send is the string to send.
+                          type: string
+                        startTLS:
+                          description: startTLS upgrades the connection to TLS after
+                            this exchange.
+                          type: boolean
+                      type: object
+                    type: array
+                  tls:
+                    description: tls enables TLS for the TCP connection.
+                    type: boolean
+                  tlsConfig:
+                    description: tlsConfig configures TLS settings.
+                    properties:
+                      caRef:
+                        description: caRef references a Secret containing the CA certificate.
+                        properties:
+                          key:
+                            description: key within the Secret.
+                            type: string
+                          name:
+                            description: name of the Secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      certRef:
+                        description: certRef references a Secret containing the client
+                          certificate.
+                        properties:
+                          key:
+                            description: key within the Secret.
+                            type: string
+                          name:
+                            description: name of the Secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      insecureSkipVerify:
+                        description: insecureSkipVerify disables TLS certificate verification.
+                        type: boolean
+                      keyRef:
+                        description: keyRef references a Secret containing the client
+                          key.
+                        properties:
+                          key:
+                            description: key within the Secret.
+                            type: string
+                          name:
+                            description: name of the Secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      maxVersion:
+                        description: maxVersion sets the maximum TLS version.
+                        enum:
+                        - TLS10
+                        - TLS11
+                        - TLS12
+                        - TLS13
+                        type: string
+                      minVersion:
+                        description: minVersion sets the minimum TLS version.
+                        enum:
+                        - TLS10
+                        - TLS11
+                        - TLS12
+                        - TLS13
+                        type: string
+                      serverName:
+                        description: serverName specifies the hostname for SNI.
+                        type: string
+                    type: object
+                type: object
+              timeout:
+                default: 5s
+                description: timeout is the probe timeout.
+                type: string
+              unix:
+                description: unix configures a Unix socket prober.
+                properties:
+                  queryResponse:
+                    description: queryResponse defines the expected query-response
+                      pairs.
+                    items:
+                      description: QueryResponseConfig defines a TCP/Unix query-response
+                        pair.
+                      properties:
+                        expect:
+                          description: expect is the regular expression to match the
+                            response against.
+                          type: string
+                        send:
+                          description: send is the string to send.
+                          type: string
+                        startTLS:
+                          description: startTLS upgrades the connection to TLS after
+                            this exchange.
+                          type: boolean
+                      type: object
+                    type: array
+                type: object
+              websocket:
+                description: websocket configures a WebSocket prober.
+                properties:
+                  headers:
+                    additionalProperties:
+                      type: string
+                    description: headers are additional HTTP headers for the WebSocket
+                      handshake.
+                    type: object
+                type: object
+            type: object
+          status:
+            description: BlackboxModuleStatus defines the observed state of BlackboxModule.
+            properties:
+              conditions:
+                description: conditions represent the current state of the BlackboxModule
+                  resource.
+                items:
+                  description: Condition contains details for one aspect of the current
+                    state of this API Resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              observedGeneration:
+                description: observedGeneration is the last observed .metadata.generation.
+                format: int64
+                type: integer
+              referencedByExporters:
+                description: referencedByExporters lists the BlackboxExporters that
+                  include this module.
+                items:
+                  description: NamespacedReference is a reference to a resource in
+                    a specific namespace.
+                  properties:
+                    name:
+                      description: name of the referenced resource.
+                      type: string
+                    namespace:
+                      description: |-
+                        namespace of the referenced resource.
+                        Defaults to the namespace of the referencing resource.
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

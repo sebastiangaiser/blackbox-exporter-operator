@@ -1,0 +1,16 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxModule
+metadata:
+  name: dns-a-check
+  namespace: monitoring
+  labels:
+    exporter: main
+spec:
+  timeout: 5s
+  dns:
+    queryName: example.com
+    queryType: A
+    transportProtocol: udp
+    recursionDesired: true
+    validRcodes:
+      - NOERROR

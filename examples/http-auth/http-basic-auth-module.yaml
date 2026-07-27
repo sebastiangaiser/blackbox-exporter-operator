@@ -1,0 +1,16 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxModule
+metadata:
+  name: http-basic-auth
+  namespace: monitoring
+  labels:
+    exporter: main
+spec:
+  timeout: 10s
+  http:
+    method: GET
+    basicAuth:
+      username: monitor
+      passwordRef:
+        name: monitoring-credentials
+        key: basic-auth-password

@@ -1,0 +1,11 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxModule
+metadata:
+  name: tcp-connect
+  namespace: monitoring
+  labels:
+    exporter: main
+spec:
+  timeout: 5s
+  tcp:
+    preferredIPProtocol: ip4

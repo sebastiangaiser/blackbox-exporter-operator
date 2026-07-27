@@ -1,0 +1,104 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "blackbox-exporter-operator.fullname" . }}
+  labels:
+    {{- include "blackbox-exporter-operator.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - services
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - monitoring.coreos.com
+    resources:
+      - probes
+      - servicemonitors
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - monitoring.gaiser.bayern
+    resources:
+      - blackboxexporters
+      - blackboxmodules
+      - blackboxprobes
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - monitoring.gaiser.bayern
+    resources:
+      - blackboxexporters/finalizers
+      - blackboxmodules/finalizers
+      - blackboxprobes/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - monitoring.gaiser.bayern
+    resources:
+      - blackboxexporters/status
+      - blackboxmodules/status
+      - blackboxprobes/status
+    verbs:
+      - get
+      - patch
+      - update

@@ -1,0 +1,71 @@
+{{- if .Values.webhook.enabled }}
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ include "blackbox-exporter-operator.fullname" . }}
+  labels:
+    {{- include "blackbox-exporter-operator.labels" . | nindent 4 }}
+  annotations:
+    cert-manager.io/inject-ca-from: {{ .Release.Namespace }}/{{ include "blackbox-exporter-operator.fullname" . }}-webhook-cert
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: {{ include "blackbox-exporter-operator.fullname" . }}-webhook
+        namespace: {{ .Release.Namespace }}
+        path: /validate-monitoring-gaiser-bayern-v1alpha1-blackboxexporter
+    failurePolicy: Fail
+    name: vblackboxexporter.kb.io
+    rules:
+      - apiGroups:
+          - monitoring.gaiser.bayern
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - blackboxexporters
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: {{ include "blackbox-exporter-operator.fullname" . }}-webhook
+        namespace: {{ .Release.Namespace }}
+        path: /validate-monitoring-gaiser-bayern-v1alpha1-blackboxmodule
+    failurePolicy: Fail
+    name: vblackboxmodule.kb.io
+    rules:
+      - apiGroups:
+          - monitoring.gaiser.bayern
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - blackboxmodules
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: {{ include "blackbox-exporter-operator.fullname" . }}-webhook
+        namespace: {{ .Release.Namespace }}
+        path: /validate-monitoring-gaiser-bayern-v1alpha1-blackboxprobe
+    failurePolicy: Fail
+    name: vblackboxprobe.kb.io
+    rules:
+      - apiGroups:
+          - monitoring.gaiser.bayern
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - blackboxprobes
+    sideEffects: None
+{{- end }}

@@ -1,0 +1,19 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxProbe
+metadata:
+  name: our-api
+  namespace: team-a
+spec:
+  exporterRef:
+    name: shared
+    namespace: monitoring
+  moduleRef:
+    name: http-2xx
+    namespace: monitoring
+  targets:
+    - https://api.team-a.internal/health
+    - https://api.team-a.internal/ready
+  interval: 30s
+  scrapeTimeout: 10s
+  additionalLabels:
+    team: team-a

@@ -1,0 +1,31 @@
+{{- if .Values.webhook.enabled }}
+{{- $issuerName := default (printf "%s-selfsigned" (include "blackbox-exporter-operator.fullname" .)) .Values.webhook.certManager.issuerRef.name -}}
+{{- $issuerKind := default "Issuer" .Values.webhook.certManager.issuerRef.kind -}}
+{{- if not .Values.webhook.certManager.issuerRef.name }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ $issuerName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "blackbox-exporter-operator.labels" . | nindent 4 }}
+spec:
+  selfSigned: {}
+---
+{{- end }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "blackbox-exporter-operator.fullname" . }}-webhook-cert
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "blackbox-exporter-operator.labels" . | nindent 4 }}
+spec:
+  dnsNames:
+    - {{ include "blackbox-exporter-operator.fullname" . }}-webhook.{{ .Release.Namespace }}.svc
+    - {{ include "blackbox-exporter-operator.fullname" . }}-webhook.{{ .Release.Namespace }}.svc.cluster.local
+  issuerRef:
+    kind: {{ $issuerKind }}
+    name: {{ $issuerName }}
+  secretName: {{ include "blackbox-exporter-operator.fullname" . }}-webhook-cert
+{{- end }}

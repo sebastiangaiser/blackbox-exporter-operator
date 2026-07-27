@@ -1,0 +1,6 @@
+## Append samples of your project ##
+resources:
+- monitoring_v1alpha1_blackboxexporter.yaml
+- monitoring_v1alpha1_blackboxmodule.yaml
+- monitoring_v1alpha1_blackboxprobe.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples

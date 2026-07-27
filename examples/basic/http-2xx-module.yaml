@@ -1,0 +1,13 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxModule
+metadata:
+  name: http-2xx
+  namespace: monitoring
+  labels:
+    exporter: main
+spec:
+  timeout: 5s
+  http:
+    method: GET
+    followRedirects: true
+    preferredIPProtocol: ip4

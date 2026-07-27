@@ -1,0 +1,17 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxModule
+metadata:
+  name: https-tls-required
+  namespace: monitoring
+  labels:
+    exporter: main
+spec:
+  timeout: 5s
+  http:
+    method: GET
+    failIfNotSSL: true
+    validHTTPVersions:
+      - "HTTP/1.1"
+      - "HTTP/2.0"
+    tlsConfig:
+      insecureSkipVerify: false
