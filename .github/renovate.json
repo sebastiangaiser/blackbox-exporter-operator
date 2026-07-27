@@ -7,7 +7,9 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["\\.go$"],
+      "managerFilePatterns": [
+        "/\\.go$/"
+      ],
       "matchStrings": [
         "//\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\n\\s*\\S+\\s*=\\s*\"(?<currentValue>[^\"]+)\""
       ]
@@ -18,31 +20,31 @@
       "description": "Group Kubernetes client dependencies",
       "groupName": "kubernetes deps",
       "matchDatasources": ["go"],
-      "matchPackagePrefixes": [
-        "k8s.io/api",
-        "k8s.io/apimachinery",
-        "k8s.io/client-go",
-        "k8s.io/apiextensions-apiserver",
-        "k8s.io/component-base",
-        "k8s.io/apiserver",
-        "k8s.io/utils"
+      "matchPackageNames": [
+        "k8s.io/api{/,}**",
+        "k8s.io/apimachinery{/,}**",
+        "k8s.io/client-go{/,}**",
+        "k8s.io/apiextensions-apiserver{/,}**",
+        "k8s.io/component-base{/,}**",
+        "k8s.io/apiserver{/,}**",
+        "k8s.io/utils{/,}**"
       ]
     },
     {
       "description": "Group controller-runtime ecosystem",
       "groupName": "controller-runtime",
       "matchDatasources": ["go"],
-      "matchPackagePrefixes": [
-        "sigs.k8s.io/controller-runtime",
-        "sigs.k8s.io/controller-tools"
+      "matchPackageNames": [
+        "sigs.k8s.io/controller-runtime{/,}**",
+        "sigs.k8s.io/controller-tools{/,}**"
       ]
     },
     {
       "description": "Group prometheus-operator dependencies",
       "groupName": "prometheus-operator",
       "matchDatasources": ["go"],
-      "matchPackagePrefixes": [
-        "github.com/prometheus-operator/prometheus-operator"
+      "matchPackageNames": [
+        "github.com/prometheus-operator/prometheus-operator{/,}**"
       ]
     },
     {
