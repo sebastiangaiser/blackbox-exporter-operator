@@ -4,6 +4,10 @@
     "config:recommended",
     "helpers:pinGitHubActionDigests"
   ],
+  "semanticCommits": "enabled",
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
   "customManagers": [
     {
       "customType": "regex",
