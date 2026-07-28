@@ -230,7 +230,7 @@ func convertRelabelConfig(rl monitoringv1alpha1.RelabelConfig) *promv1.RelabelCo
 		rc.Action = rl.Action
 	}
 	if rl.Modulus != 0 {
-		rc.Modulus = rl.Modulus
+		rc.Modulus = int64(rl.Modulus)
 	}
 
 	return rc

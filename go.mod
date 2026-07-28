@@ -5,7 +5,7 @@ go 1.26.5
 require (
 	github.com/onsi/ginkgo/v2 v2.32.0
 	github.com/onsi/gomega v1.42.1
-	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.92.1
+	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.93.0
 	github.com/prometheus/blackbox_exporter v0.28.1-0.20260724020017-e39d7d415684
 	github.com/prometheus/common v0.70.1
 	go.yaml.in/yaml/v3 v3.0.5
