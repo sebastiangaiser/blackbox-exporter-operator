@@ -2,8 +2,8 @@ apiVersion: v2
 name: blackbox-exporter-operator
 description: A Kubernetes operator for managing Prometheus blackbox-exporter instances
 type: application
-version: 0.1.0 # x-releaser-pleaser-version
-appVersion: "0.1.0" # x-releaser-pleaser-version
+version: 0.1.1 # x-releaser-pleaser-version
+appVersion: "0.1.1" # x-releaser-pleaser-version
 home: https://github.com/sebastiangaiser/blackbox-exporter-operator
 sources:
   - https://github.com/sebastiangaiser/blackbox-exporter-operator
