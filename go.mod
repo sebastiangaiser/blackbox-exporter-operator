@@ -6,7 +6,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.32.1
 	github.com/onsi/gomega v1.42.1
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.93.1
-	github.com/prometheus/blackbox_exporter v0.28.1-0.20260820181047-d43d39cc5925
+	github.com/prometheus/blackbox_exporter v0.28.1-0.20260824072211-372bf83b8e4b
 	github.com/prometheus/common v0.70.1
 	go.yaml.in/yaml/v3 v3.0.5
 	k8s.io/api v0.36.4
