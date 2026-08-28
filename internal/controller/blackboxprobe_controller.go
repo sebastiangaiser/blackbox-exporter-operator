@@ -116,7 +116,10 @@ func (r *BlackboxProbeReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	if len(probe.Spec.Targets) > 0 {
 		var targetLabels map[string]string
 		if len(probe.Spec.AdditionalLabels) > 0 {
-			targetLabels = probe.Spec.AdditionalLabels
+			targetLabels = make(map[string]string, len(probe.Spec.AdditionalLabels))
+			for k, v := range probe.Spec.AdditionalLabels {
+				targetLabels[k] = v
+			}
 		}
 		probeTargets.StaticConfig = &promv1.ProbeTargetStaticConfig{
 			Targets: probe.Spec.Targets,

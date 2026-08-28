@@ -309,6 +309,10 @@ type BlackboxModuleStatus struct {
 	// +optional
 	ReferencedByExporters []NamespacedReference `json:"referencedByExporters,omitempty"`
 
+	// prober is the blackbox-exporter prober type used for this module.
+	// +optional
+	Prober string `json:"prober,omitempty"`
+
 	// observedGeneration is the last observed .metadata.generation.
 	// +optional
 	ObservedGeneration int64 `json:"observedGeneration,omitempty"`
