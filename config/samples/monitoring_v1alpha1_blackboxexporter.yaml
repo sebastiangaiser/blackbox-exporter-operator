@@ -6,4 +6,9 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
   name: blackboxexporter-sample
 spec:
-  # TODO(user): Add fields here
+  replicas: 1
+  moduleSelector:
+    namespaceSelector:
+      any: true
+    matchLabels:
+      exporter: blackboxexporter-sample

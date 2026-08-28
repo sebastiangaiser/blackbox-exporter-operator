@@ -26,3 +26,4 @@ jobs:
           token: ${{ secrets.RELEASER_PLEASER_TOKEN }}
           extra-files: |
             charts/blackbox-exporter-operator/Chart.yaml
+            README.md

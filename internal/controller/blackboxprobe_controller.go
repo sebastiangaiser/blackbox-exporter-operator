@@ -3,6 +3,8 @@ package controller
 import (
 	"context"
 	"fmt"
+	"maps"
+	"slices"
 
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -100,55 +102,15 @@ func (r *BlackboxProbeReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		scrapeTimeout = promv1.Duration(probe.Spec.ScrapeTimeout)
 	}
 
-	// Build labels for the generated Probe CR.
-	probeLabels := map[string]string{
-		"app.kubernetes.io/managed-by":      "blackbox-exporter-operator",
-		"monitoring.gaiser.bayern/exporter": exporter.Name,
-		"monitoring.gaiser.bayern/module":   module.Name,
-	}
-	for k, v := range probe.Spec.AdditionalLabels {
-		probeLabels[k] = v
-	}
-
-	// Build targets.
-	probeTargets := promv1.ProbeTargets{}
-
-	if len(probe.Spec.Targets) > 0 {
-		var targetLabels map[string]string
-		if len(probe.Spec.AdditionalLabels) > 0 {
-			targetLabels = make(map[string]string, len(probe.Spec.AdditionalLabels))
-			for k, v := range probe.Spec.AdditionalLabels {
-				targetLabels[k] = v
-			}
-		}
-		probeTargets.StaticConfig = &promv1.ProbeTargetStaticConfig{
-			Targets: probe.Spec.Targets,
-			Labels:  targetLabels,
-		}
-	}
-
-	if probe.Spec.Ingress != nil {
-		ingressTarget := &promv1.ProbeTargetIngress{
-			Selector: probe.Spec.Ingress.Selector,
-		}
-		if probe.Spec.Ingress.NamespaceSelector.Any {
-			ingressTarget.NamespaceSelector = promv1.NamespaceSelector{Any: true}
-		} else if len(probe.Spec.Ingress.NamespaceSelector.MatchNames) > 0 {
-			ingressTarget.NamespaceSelector = promv1.NamespaceSelector{
-				MatchNames: probe.Spec.Ingress.NamespaceSelector.MatchNames,
-			}
-		}
-		for _, rl := range probe.Spec.Ingress.RelabelConfigs {
-			ingressTarget.RelabelConfigs = append(ingressTarget.RelabelConfigs, *convertRelabelConfig(rl))
-		}
-		probeTargets.Ingress = ingressTarget
-	}
+	probeLabels, probeAnnotations := buildProbeMetadata(probe, exporter.Name, module.Name)
+	probeTargets := buildProbeTargets(probe)
 
 	promProbe := &promv1.Probe{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      probe.Name,
-			Namespace: probe.Namespace,
-			Labels:    probeLabels,
+			Name:        probe.Name,
+			Namespace:   probe.Namespace,
+			Labels:      probeLabels,
+			Annotations: probeAnnotations,
 		},
 		Spec: promv1.ProbeSpec{
 			ProberSpec: promv1.ProberSpec{
@@ -209,6 +171,88 @@ func (r *BlackboxProbeReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 	}
 
 	return ctrl.Result{}, nil
+}
+
+// deprecatedAdditionalLabels reads spec.additionalLabels. The field is deprecated in
+// favour of probeMetadata and targetLabels, but is still honoured so that resources
+// created before those fields existed keep behaving the same. Reading it is confined to
+// this helper to keep the deprecation warning in one place.
+//
+//nolint:staticcheck // reading the deprecated field is the point of this helper
+func deprecatedAdditionalLabels(probe *monitoringv1alpha1.BlackboxProbe) map[string]string {
+	return probe.Spec.AdditionalLabels
+}
+
+// buildProbeMetadata renders labels and annotations for the generated Probe CR.
+// The deprecated additionalLabels form the base, probeMetadata refines it, and the
+// reserved labels are applied last so that neither can override the operator's own
+// bookkeeping.
+func buildProbeMetadata(probe *monitoringv1alpha1.BlackboxProbe, exporterName, moduleName string) (map[string]string, map[string]string) {
+	labels := map[string]string{}
+	var annotations map[string]string
+
+	maps.Copy(labels, deprecatedAdditionalLabels(probe))
+
+	if probe.Spec.ProbeMetadata != nil {
+		maps.Copy(labels, probe.Spec.ProbeMetadata.Labels)
+		annotations = maps.Clone(probe.Spec.ProbeMetadata.Annotations)
+	}
+
+	labels["app.kubernetes.io/managed-by"] = "blackbox-exporter-operator"
+	labels["monitoring.gaiser.bayern/exporter"] = exporterName
+	labels["monitoring.gaiser.bayern/module"] = moduleName
+
+	return labels, annotations
+}
+
+// buildProbeTargets renders the target configuration for the generated Probe CR.
+func buildProbeTargets(probe *monitoringv1alpha1.BlackboxProbe) promv1.ProbeTargets {
+	targets := promv1.ProbeTargets{}
+
+	if len(probe.Spec.Targets) > 0 {
+		// The deprecated additionalLabels form the base, targetLabels refine it.
+		additional := deprecatedAdditionalLabels(probe)
+		var labels map[string]string
+		if len(additional) > 0 || len(probe.Spec.TargetLabels) > 0 {
+			labels = make(map[string]string, len(additional)+len(probe.Spec.TargetLabels))
+			maps.Copy(labels, additional)
+			maps.Copy(labels, probe.Spec.TargetLabels)
+		}
+		targets.StaticConfig = &promv1.ProbeTargetStaticConfig{
+			Targets: slices.Clone(probe.Spec.Targets),
+			Labels:  labels,
+		}
+	}
+
+	if probe.Spec.Ingress == nil {
+		return targets
+	}
+
+	ingress := &promv1.ProbeTargetIngress{Selector: probe.Spec.Ingress.Selector}
+	if probe.Spec.Ingress.NamespaceSelector.Any {
+		ingress.NamespaceSelector = promv1.NamespaceSelector{Any: true}
+	} else if len(probe.Spec.Ingress.NamespaceSelector.MatchNames) > 0 {
+		ingress.NamespaceSelector = promv1.NamespaceSelector{
+			MatchNames: probe.Spec.Ingress.NamespaceSelector.MatchNames,
+		}
+	}
+
+	// Ingress targets have no label field upstream, so labels become replace
+	// relabelings. Keys are sorted to keep the generated spec stable.
+	for _, k := range slices.Sorted(maps.Keys(probe.Spec.Ingress.Labels)) {
+		value := probe.Spec.Ingress.Labels[k]
+		ingress.RelabelConfigs = append(ingress.RelabelConfigs, promv1.RelabelConfig{
+			TargetLabel: k,
+			Replacement: &value,
+			Action:      "replace",
+		})
+	}
+	for _, rl := range probe.Spec.Ingress.RelabelConfigs {
+		ingress.RelabelConfigs = append(ingress.RelabelConfigs, *convertRelabelConfig(rl))
+	}
+	targets.Ingress = ingress
+
+	return targets
 }
 
 func convertRelabelConfig(rl monitoringv1alpha1.RelabelConfig) *promv1.RelabelConfig {

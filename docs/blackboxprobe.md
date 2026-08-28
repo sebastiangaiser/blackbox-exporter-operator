@@ -34,6 +34,11 @@ spec:
     - https://api.example.com
     - https://status.example.com:8443/health
 
+  # Labels assigned to every metric scraped from spec.targets.
+  targetLabels:
+    team: platform
+    env: production
+
   # Ingress-based target discovery (alternative or addition to static targets).
   # The operator configures a target for each host of matching Ingress objects.
   # At least one of targets or ingress must be set.
@@ -43,6 +48,9 @@ spec:
   #       monitoring: "true"
   #   namespaceSelector:
   #     any: true
+  #   # Labels assigned to every metric scraped from the discovered targets.
+  #   labels:
+  #     source: ingress-discovery
   #   relabelConfigs: []
 
   # Scrape interval for the generated prometheus-operator Probe CR.
@@ -53,11 +61,19 @@ spec:
   # Default: 10s
   scrapeTimeout: 10s
 
-  # Additional labels applied to the generated Probe CR.
-  # These propagate to scraped metrics.
-  additionalLabels:
-    team: platform
-    env: production
+  # Labels and annotations applied to the generated Probe object itself.
+  # These do NOT propagate to scraped metrics.
+  probeMetadata:
+    labels:
+      team: platform
+    annotations:
+      owner: platform-team
+
+  # Deprecated: sets labels on the generated Probe object AND on the scraped
+  # metrics, with no way to separate the two. Still honoured, but targetLabels
+  # and probeMetadata take precedence. Prefer those.
+  # additionalLabels:
+  #   env: production
 
   # Additional metric relabelings applied to the generated Probe CR.
   metricRelabelings:
@@ -93,7 +109,8 @@ metadata:
     monitoring.gaiser.bayern/exporter: main
     monitoring.gaiser.bayern/module: http-2xx-tls
     team: platform
-    env: production
+  annotations:
+    owner: platform-team
   ownerReferences:
     - apiVersion: monitoring.gaiser.bayern/v1alpha1
       kind: BlackboxProbe
@@ -122,6 +139,42 @@ spec:
       action: keep
 ```
 
+## Object Labels vs. Series Labels
+
+Labels on the generated `Probe` object and labels on the scraped metrics are configured
+separately:
+
+| Goal | Field |
+|------|-------|
+| Label/annotate the generated `Probe` object (e.g. so a `Prometheus` `probeSelector` picks it up) | `probeMetadata.labels` / `probeMetadata.annotations` |
+| Add a label to every metric from `spec.targets` | `targetLabels` |
+| Add a label to every metric from the discovered Ingress targets | `ingress.labels` |
+
+The older `additionalLabels` field sets both at once and cannot separate them. It is
+deprecated but still honoured: its labels are applied first, then `probeMetadata.labels`
+and `targetLabels` are layered on top. Existing resources therefore keep behaving exactly
+as before.
+
+Three labels on the generated object are managed by the operator, applied last, and cannot
+be overridden by `probeMetadata.labels` or `additionalLabels`:
+
+* `app.kubernetes.io/managed-by: blackbox-exporter-operator`
+* `monitoring.gaiser.bayern/exporter: <exporterRef.name>`
+* `monitoring.gaiser.bayern/module: <moduleRef.name>`
+
+`ingress.labels` are rendered as `replace` relabelings (sorted by key, before any entry in
+`ingress.relabelConfigs`), because the upstream `Probe` CR has no label field for Ingress
+targets. `ingress: {labels: {source: ingress-discovery}}` therefore renders as:
+
+```yaml
+targets:
+  ingress:
+    relabelConfigs:
+      - targetLabel: source
+        replacement: ingress-discovery
+        action: replace
+```
+
 ## Field Reference
 
 | Field | Type | Default | Description |
@@ -131,13 +184,17 @@ spec:
 | `moduleRef.name` | string | required | Name of the `BlackboxModule` |
 | `moduleRef.namespace` | string | same namespace | Namespace of the `BlackboxModule` |
 | `targets` | []string | `[]` | Static list of targets to probe (URLs or host:port) |
+| `targetLabels` | map[string]string | `{}` | Labels assigned to metrics scraped from `targets` |
 | `ingress` | IngressTargetConfig | - | Ingress-based target discovery |
 | `ingress.selector` | metav1.LabelSelector | `{}` | Select Ingress objects by label |
 | `ingress.namespaceSelector` | NamespaceSelector | - | Select namespaces for Ingress discovery |
+| `ingress.labels` | map[string]string | `{}` | Labels assigned to metrics scraped from the discovered targets |
 | `ingress.relabelConfigs` | []RelabelConfig | `[]` | Relabeling for discovered Ingress targets |
 | `interval` | string | `60s` | Scrape interval |
 | `scrapeTimeout` | string | `10s` | Scrape timeout (must be <= interval) |
-| `additionalLabels` | map[string]string | `{}` | Extra labels on generated Probe CR and metrics |
+| `probeMetadata.labels` | map[string]string | `{}` | Labels on the generated Probe object |
+| `probeMetadata.annotations` | map[string]string | `{}` | Annotations on the generated Probe object |
+| `additionalLabels` | map[string]string | `{}` | Deprecated. Labels on the generated Probe object *and* the metrics |
 | `metricRelabelings` | []RelabelConfig | `[]` | Metric relabeling rules |
 
 ## Status

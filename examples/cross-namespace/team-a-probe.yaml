@@ -15,5 +15,10 @@ spec:
     - https://api.team-a.internal/ready
   interval: 30s
   scrapeTimeout: 10s
-  additionalLabels:
+  # assigned to every metric scraped from spec.targets
+  targetLabels:
     team: team-a
+  # applied to the generated Probe object, not to the metrics
+  probeMetadata:
+    labels:
+      team: team-a

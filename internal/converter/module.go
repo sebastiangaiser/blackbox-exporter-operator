@@ -14,11 +14,12 @@ import (
 
 // Upstream blackbox-exporter prober identifiers.
 const (
-	proberHTTP = "http"
-	proberTCP  = "tcp"
-	proberDNS  = "dns"
-	proberICMP = "icmp"
-	proberGRPC = "grpc"
+	proberHTTP      = "http"
+	proberTCP       = "tcp"
+	proberDNS       = "dns"
+	proberICMP      = "icmp"
+	proberGRPC      = "grpc"
+	proberWebsocket = "websocket"
 )
 
 // ModuleName returns the unique module name for a BlackboxModule in the rendered blackbox.yml.
@@ -56,6 +57,9 @@ func ConvertModule(spec *monitoringv1alpha1.BlackboxModuleSpec, secrets *Resolve
 	case spec.Unix != nil:
 		module.Prober = proberTCP // unix uses tcp prober upstream
 		module.Unix = convertUnixProbe(spec.Unix)
+	case spec.Websocket != nil:
+		module.Prober = proberWebsocket
+		module.Websocket = convertWebsocketProbe(spec.Websocket)
 	default:
 		return module, fmt.Errorf("no prober configuration set")
 	}
@@ -312,4 +316,18 @@ func convertDNSRRValidator(spec *monitoringv1alpha1.DNSRRValidator) bbconfig.DNS
 		FailIfMatchesRegexp:    spec.FailIfMatchesRegexp,
 		FailIfNotMatchesRegexp: spec.FailIfNotMatchesRegexp,
 	}
+}
+
+func convertWebsocketProbe(spec *monitoringv1alpha1.WebsocketProbeConfig) bbconfig.WebsocketProbe {
+	probe := bbconfig.DefaultWebsocketProbe
+
+	if len(spec.Headers) > 0 {
+		headers := make(map[string]promconfig.Header, len(spec.Headers))
+		for name, value := range spec.Headers {
+			headers[name] = promconfig.Header{Values: []string{value}}
+		}
+		probe.Headers = promconfig.Headers{Headers: headers}
+	}
+
+	return probe
 }
