@@ -37,7 +37,7 @@ func (r *BlackboxModuleReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 	}
 
 	// Validate by attempting conversion (without secrets — validation only).
-	_, err := converter.ConvertModule(&module.Spec, nil)
+	converted, err := converter.ConvertModule(&module.Spec, nil)
 
 	configValid := metav1.ConditionTrue
 	reason := "Valid"
@@ -48,6 +48,8 @@ func (r *BlackboxModuleReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 		message = fmt.Sprintf("Module configuration is invalid: %v", err)
 		log.Error(err, "invalid module configuration")
 	}
+
+	module.Status.Prober = converted.Prober
 
 	setCondition(&module.Status.Conditions, metav1.Condition{
 		Type:               conditionTypeConfig,

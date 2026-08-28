@@ -707,6 +707,10 @@ spec:
                 description: observedGeneration is the last observed .metadata.generation.
                 format: int64
                 type: integer
+              prober:
+                description: prober is the blackbox-exporter prober type used for
+                  this module.
+                type: string
               referencedByExporters:
                 description: referencedByExporters lists the BlackboxExporters that
                   include this module.
