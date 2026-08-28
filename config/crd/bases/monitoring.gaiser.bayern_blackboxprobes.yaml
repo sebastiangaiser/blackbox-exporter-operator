@@ -11,6 +11,8 @@ spec:
     kind: BlackboxProbe
     listKind: BlackboxProbeList
     plural: blackboxprobes
+    shortNames:
+    - bbp
     singular: blackboxprobe
   scope: Namespaced
   versions:

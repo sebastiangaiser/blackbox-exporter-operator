@@ -315,6 +315,7 @@ type BlackboxModuleStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:resource:shortName=bbm
 // +kubebuilder:subresource:status
 // +kubebuilder:printcolumn:name="Prober",type=string,JSONPath=`.status.prober`,priority=0
 // +kubebuilder:printcolumn:name="Age",type=date,JSONPath=`.metadata.creationTimestamp`

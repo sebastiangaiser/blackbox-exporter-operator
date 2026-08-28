@@ -11,6 +11,8 @@ spec:
     kind: BlackboxExporter
     listKind: BlackboxExporterList
     plural: blackboxexporters
+    shortNames:
+    - bbe
     singular: blackboxexporter
   scope: Namespaced
   versions:
