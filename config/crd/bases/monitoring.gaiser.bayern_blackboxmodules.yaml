@@ -11,6 +11,8 @@ spec:
     kind: BlackboxModule
     listKind: BlackboxModuleList
     plural: blackboxmodules
+    shortNames:
+    - bbm
     singular: blackboxmodule
   scope: Namespaced
   versions:

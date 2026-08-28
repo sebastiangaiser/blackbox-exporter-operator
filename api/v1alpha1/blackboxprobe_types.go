@@ -66,6 +66,7 @@ type BlackboxProbeStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:resource:shortName=bbp
 // +kubebuilder:subresource:status
 // +kubebuilder:printcolumn:name="Exporter",type=string,JSONPath=`.spec.exporterRef.name`
 // +kubebuilder:printcolumn:name="Module",type=string,JSONPath=`.spec.moduleRef.name`
