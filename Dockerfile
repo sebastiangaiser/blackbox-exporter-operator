@@ -1,7 +1,7 @@
 # Build the manager binary.
 # --platform=$BUILDPLATFORM keeps the builder native to the runner and lets Go
 # cross-compile to TARGETARCH, avoiding slow QEMU emulation.
-FROM --platform=$BUILDPLATFORM golang:1.27.0 AS builder
+FROM --platform=$BUILDPLATFORM golang:1.27.1 AS builder
 ARG TARGETOS
 ARG TARGETARCH
 
