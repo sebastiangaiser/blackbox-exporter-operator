@@ -15,7 +15,8 @@ spec:
         monitoring: "true"
     namespaceSelector:
       any: true
+    # assigned to every metric scraped from the discovered targets
+    labels:
+      source: ingress-discovery
   interval: 60s
   scrapeTimeout: 10s
-  additionalLabels:
-    source: ingress-discovery

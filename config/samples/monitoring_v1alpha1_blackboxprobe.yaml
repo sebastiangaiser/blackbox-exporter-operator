@@ -6,4 +6,11 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
   name: blackboxprobe-sample
 spec:
-  # TODO(user): Add fields here
+  exporterRef:
+    name: blackboxexporter-sample
+  moduleRef:
+    name: blackboxmodule-sample
+  targets:
+    - https://example.com
+  interval: 60s
+  scrapeTimeout: 10s

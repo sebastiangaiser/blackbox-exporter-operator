@@ -57,8 +57,12 @@ spec:
               additionalLabels:
                 additionalProperties:
                   type: string
-                description: additionalLabels are added to the generated Probe CR
-                  and propagate to scraped metrics.
+                description: |-
+                  additionalLabels are added to the generated Probe CR and propagate to scraped metrics.
+
+                  Deprecated: additionalLabels cannot set object labels and metric labels
+                  independently. Use probeMetadata for the generated Probe CR, and targetLabels or
+                  ingress.labels for the scraped metrics. Both take precedence over this field.
                 type: object
               exporterRef:
                 description: exporterRef references the BlackboxExporter instance
@@ -81,6 +85,14 @@ spec:
                   The operator configures a target for each host of matching Ingress objects.
                   At least one of targets or ingress must be set.
                 properties:
+                  labels:
+                    additionalProperties:
+                      type: string
+                    description: |-
+                      labels are assigned to all metrics scraped from the discovered targets.
+                      They are applied as replace relabelings, because the underlying
+                      prometheus-operator Probe has no label field for ingress targets.
+                    type: object
                   namespaceSelector:
                     description: namespaceSelector selects namespaces to discover
                       Ingress objects from.
@@ -256,10 +268,39 @@ spec:
                 required:
                 - name
                 type: object
+              probeMetadata:
+                description: |-
+                  probeMetadata defines labels and annotations propagated to the generated Probe CR.
+                  It does not affect scraped metrics; use targetLabels or ingress.labels for that.
+                  Its labels take precedence over additionalLabels.
+
+                  The following labels are reserved and cannot be overridden:
+                  * "app.kubernetes.io/managed-by", set to "blackbox-exporter-operator".
+                  * "monitoring.gaiser.bayern/exporter", set to the referenced BlackboxExporter.
+                  * "monitoring.gaiser.bayern/module", set to the referenced BlackboxModule.
+                properties:
+                  annotations:
+                    additionalProperties:
+                      type: string
+                    description: annotations are added to the generated object.
+                    type: object
+                  labels:
+                    additionalProperties:
+                      type: string
+                    description: labels are added to the generated object.
+                    type: object
+                type: object
               scrapeTimeout:
                 default: 10s
                 description: scrapeTimeout is the scrape timeout. Must be <= interval.
                 type: string
+              targetLabels:
+                additionalProperties:
+                  type: string
+                description: |-
+                  targetLabels are assigned to all metrics scraped from targets.
+                  They take precedence over additionalLabels.
+                type: object
               targets:
                 description: |-
                   targets is a list of static endpoints to probe (URLs or host:port).

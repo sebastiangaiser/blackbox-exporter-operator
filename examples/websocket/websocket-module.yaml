@@ -1,0 +1,12 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxModule
+metadata:
+  name: ws-check
+  namespace: monitoring
+  labels:
+    exporter: main
+spec:
+  timeout: 5s
+  websocket:
+    headers:
+      Origin: https://example.com

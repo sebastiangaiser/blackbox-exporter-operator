@@ -310,6 +310,78 @@ func TestConvertModule_Unix(t *testing.T) {
 	}
 }
 
+func TestConvertModule_Websocket(t *testing.T) {
+	spec := &monitoringv1alpha1.BlackboxModuleSpec{
+		Timeout: "5s",
+		Websocket: &monitoringv1alpha1.WebsocketProbeConfig{
+			Headers: map[string]string{
+				"Authorization": "Bearer token",
+				"Origin":        "https://example.com",
+			},
+		},
+	}
+	mod, err := ConvertModule(spec, nil)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if mod.Prober != "websocket" {
+		t.Errorf("prober = %q, want %q", mod.Prober, "websocket")
+	}
+	if len(mod.Websocket.Headers.Headers) != 2 {
+		t.Fatalf("headers len = %d, want 2", len(mod.Websocket.Headers.Headers))
+	}
+	// Upstream models each header as a list of values.
+	got := mod.Websocket.Headers.Headers["Authorization"].Values
+	if len(got) != 1 || got[0] != "Bearer token" {
+		t.Errorf("Authorization = %v, want [\"Bearer token\"]", got)
+	}
+	// Upstream defaults must survive the conversion.
+	if !mod.Websocket.IPProtocolFallback {
+		t.Error("ipProtocolFallback = false, want the upstream default true")
+	}
+}
+
+func TestConvertModule_Websocket_NoHeaders(t *testing.T) {
+	spec := &monitoringv1alpha1.BlackboxModuleSpec{
+		Timeout:   "5s",
+		Websocket: &monitoringv1alpha1.WebsocketProbeConfig{},
+	}
+	mod, err := ConvertModule(spec, nil)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if mod.Prober != "websocket" {
+		t.Errorf("prober = %q, want %q", mod.Prober, "websocket")
+	}
+	if mod.Websocket.Headers.Headers != nil {
+		t.Errorf("headers = %v, want nil when none are configured", mod.Websocket.Headers.Headers)
+	}
+}
+
+func TestRenderConfig_Websocket(t *testing.T) {
+	spec := &monitoringv1alpha1.BlackboxModuleSpec{
+		Timeout: "5s",
+		Websocket: &monitoringv1alpha1.WebsocketProbeConfig{
+			Headers: map[string]string{"Origin": "https://example.com"},
+		},
+	}
+	mod, err := ConvertModule(spec, nil)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	rendered, err := RenderConfig(map[string]bbconfig.Module{"monitoring-ws-check": mod})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	out := string(rendered)
+	for _, want := range []string{"monitoring-ws-check", "prober: websocket", "Origin", "https://example.com"} {
+		if !contains(out, want) {
+			t.Errorf("rendered config missing %q, got:\n%s", want, out)
+		}
+	}
+}
+
 func TestConvertModule_TLSConfig(t *testing.T) {
 	spec := &monitoringv1alpha1.BlackboxModuleSpec{
 		Timeout: "5s",

@@ -4,6 +4,17 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// EmbeddedMetadata defines metadata propagated to a generated object.
+type EmbeddedMetadata struct {
+	// labels are added to the generated object.
+	// +optional
+	Labels map[string]string `json:"labels,omitempty"`
+
+	// annotations are added to the generated object.
+	// +optional
+	Annotations map[string]string `json:"annotations,omitempty"`
+}
+
 // IngressTargetConfig configures target discovery from Ingress resources.
 type IngressTargetConfig struct {
 	// selector selects Ingress objects by label.
@@ -13,6 +24,12 @@ type IngressTargetConfig struct {
 	// namespaceSelector selects namespaces to discover Ingress objects from.
 	// +optional
 	NamespaceSelector NamespaceSelector `json:"namespaceSelector,omitempty"`
+
+	// labels are assigned to all metrics scraped from the discovered targets.
+	// They are applied as replace relabelings, because the underlying
+	// prometheus-operator Probe has no label field for ingress targets.
+	// +optional
+	Labels map[string]string `json:"labels,omitempty"`
 
 	// relabelConfigs are applied to the discovered Ingress targets before scraping.
 	// Available labels: __tmp_prometheus_ingress_address, __tmp_prometheus_job_name.

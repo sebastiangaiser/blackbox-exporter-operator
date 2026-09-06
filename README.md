@@ -2,6 +2,13 @@
 
 A Kubernetes operator that manages the full lifecycle of [Prometheus blackbox-exporter](https://github.com/prometheus/blackbox_exporter) instances. It provides a declarative way to deploy blackbox-exporter, define probe modules, and configure monitoring targets with automatic [prometheus-operator](https://github.com/prometheus-operator/prometheus-operator) integration.
 
+> [!NOTE]
+> This operator is still young and its API is served as `v1alpha1`. Fields may be added
+> or deprecated between releases; anything deprecated keeps working until a later release
+> removes it. Pin a chart version and skim the
+> [release notes](https://github.com/sebastiangaiser/blackbox-exporter-operator/releases)
+> before upgrading.
+
 ## Features
 
 - **Full lifecycle management** -- deploy blackbox-exporter via a single Custom Resource (Deployment, Service, ConfigMap)
@@ -26,7 +33,6 @@ All CRDs use the API group `monitoring.gaiser.bayern/v1alpha1`.
 
 ## Prerequisites
 
-- Kubernetes 1.28+
 - [prometheus-operator](https://github.com/prometheus-operator/prometheus-operator) installed (for `Probe` and `ServiceMonitor` CRDs)
 - [cert-manager](https://cert-manager.io/) installed (for webhook TLS certificates)
 
@@ -37,9 +43,9 @@ All CRDs use the API group `monitoring.gaiser.bayern/v1alpha1`.
 ```sh
 helm install blackbox-exporter-operator \
   oci://ghcr.io/sebastiangaiser/charts/blackbox-exporter-operator \
-  --version 0.1.0 \
   --namespace blackbox-exporter-operator-system \
-  --create-namespace
+  --create-namespace \
+  --version 0.2.0 # x-releaser-pleaser-version
 ```
 
 ### Helm (local)
@@ -144,8 +150,11 @@ spec:
     namespace: monitoring
   targets:
     - https://api.team-a.internal/health
-  additionalLabels:
+  targetLabels:        # labels on the scraped series
     team: team-a
+  probeMetadata:       # labels on the generated Probe object
+    labels:
+      team: team-a
 ```
 
 ### Ingress target discovery
@@ -173,7 +182,7 @@ spec:
   interval: 60s
 ```
 
-See the [examples/](examples/) directory for more use cases (TLS validation, TCP, DNS, gRPC, ICMP, authentication, Ingress discovery).
+See the [examples/](examples/) directory for more use cases (TLS validation, TCP, DNS, gRPC, ICMP, WebSocket, authentication, Ingress discovery).
 
 ## Documentation
 
@@ -186,7 +195,7 @@ See the [examples/](examples/) directory for more use cases (TLS validation, TCP
 
 ### Prerequisites
 
-- Go 1.25+
+- Go 1.26+
 - Kubebuilder
 - Docker or Podman
 

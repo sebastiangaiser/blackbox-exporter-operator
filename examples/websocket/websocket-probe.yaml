@@ -1,0 +1,14 @@
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxProbe
+metadata:
+  name: websocket-endpoints
+  namespace: monitoring
+spec:
+  exporterRef:
+    name: main
+  moduleRef:
+    name: ws-check
+  targets:
+    - wss://events.example.com/socket
+  interval: 60s
+  scrapeTimeout: 10s

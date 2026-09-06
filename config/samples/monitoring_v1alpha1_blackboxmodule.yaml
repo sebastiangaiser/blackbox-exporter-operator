@@ -4,6 +4,12 @@ metadata:
   labels:
     app.kubernetes.io/name: blackbox-exporter-operator
     app.kubernetes.io/managed-by: kustomize
+    exporter: blackboxexporter-sample
   name: blackboxmodule-sample
 spec:
-  # TODO(user): Add fields here
+  timeout: 5s
+  http:
+    method: GET
+    followRedirects: true
+    validStatusCodes:
+      - 200
