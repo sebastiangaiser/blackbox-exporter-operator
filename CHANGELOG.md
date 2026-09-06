@@ -1,5 +1,25 @@
 # Changelog
 
+## [v0.2.0](https://github.com/sebastiangaiser/blackbox-exporter-operator/releases/tag/v0.2.0)
+
+[Compare to previous version](https://github.com/sebastiangaiser/blackbox-exporter-operator/compare/v0.1.1...v0.2.0)
+
+### Features
+
+- **crds**: add shortnames (#40) ([497d2b8](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/497d2b8a29a754cbe9502a57f8b7c2667c2d8af7))
+- **api**: split object and series labels (#42) ([fcae305](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/fcae3052d1e46edcbd77aa3fd212722ff6d83e8f))
+
+### Bug Fixes
+
+- **deps**: update github.com/prometheus/blackbox_exporter digest to 93d446a (#34) ([dff802c](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/dff802c01e3dbf026886844bef957a11993db661))
+- **deps**: update github.com/prometheus/blackbox_exporter digest to 19352b5 (#37) ([fd9ac38](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/fd9ac38fe12c0c5ac9eabccf529437bc7badaeeb))
+- **deps**: update module github.com/onsi/gomega to v1.43.0 (#38) ([b6b3721](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/b6b3721a73f899fa9843a41f2c9487df348672b5))
+- **deps**: update kubernetes deps to v0.37.0 (#36) ([202c023](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/202c0232866563303f66308ed56efe0715515f64))
+- **crds**: add missing prober (#41) ([65e35fd](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/65e35fd85cfac76c3c85aee70c5722f3f66d4ef6))
+- **deps**: update module github.com/prometheus/common to v0.71.0 (#43) ([29675e9](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/29675e9c4aea18fe40184717f82097afbe81354b))
+- **deps**: update github.com/prometheus/blackbox_exporter digest to 582c09b (#44) ([9f652f5](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/9f652f5531d894f77ac50bc7b5feeaad7cb4b317))
+- **deps**: update module sigs.k8s.io/controller-runtime to v0.25.0 (#46) ([0412a82](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/0412a82c78e01b9b924ebeb7c952dc70be118d0f))
+
 ## [v0.1.1](https://github.com/sebastiangaiser/blackbox-exporter-operator/releases/tag/v0.1.1)
 
 [Compare to previous version](https://github.com/sebastiangaiser/blackbox-exporter-operator/compare/v0.1.0...v0.1.1)
