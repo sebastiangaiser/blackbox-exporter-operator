@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.2.1](https://github.com/sebastiangaiser/blackbox-exporter-operator/releases/tag/v0.2.1)
+
+[Compare to previous version](https://github.com/sebastiangaiser/blackbox-exporter-operator/compare/v0.2.0...v0.2.1)
+
+### Bug Fixes
+
+- **deps**: update github.com/prometheus/blackbox_exporter digest to 3302be1 (#47) ([5bd3acb](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/5bd3acb6edb0323b0849ac2c3810e11c702b36a8))
+- **deps**: update module github.com/onsi/ginkgo/v2 to v2.32.2 (#49) ([66e5346](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/66e5346e27fa604e43a8533a3dd44a9eddd9f0ab))
+- **deps**: update module github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring to v0.94.0 (#50) ([70f59bf](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/70f59bf3af8e44d06445312d4bc815473bdc6cc0))
+
 ## [v0.2.0](https://github.com/sebastiangaiser/blackbox-exporter-operator/releases/tag/v0.2.0)
 
 [Compare to previous version](https://github.com/sebastiangaiser/blackbox-exporter-operator/compare/v0.1.1...v0.2.0)
