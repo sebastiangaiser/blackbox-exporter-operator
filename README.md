@@ -45,7 +45,7 @@ helm install blackbox-exporter-operator \
   oci://ghcr.io/sebastiangaiser/charts/blackbox-exporter-operator \
   --namespace blackbox-exporter-operator-system \
   --create-namespace \
-  --version 0.2.0 # x-releaser-pleaser-version
+  --version 0.2.1 # x-releaser-pleaser-version
 ```
 
 ### Helm (local)
