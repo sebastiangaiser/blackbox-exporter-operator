@@ -1,5 +1,23 @@
 # Changelog
 
+## [v0.2.1](https://github.com/sebastiangaiser/blackbox-exporter-operator/releases/tag/v0.2.1)
+
+[Compare to previous version](https://github.com/sebastiangaiser/blackbox-exporter-operator/compare/v0.2.0...v0.2.1)
+
+### Bug Fixes
+
+- **deps**: update github.com/prometheus/blackbox_exporter digest to 3302be1 (#47) ([5bd3acb](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/5bd3acb6edb0323b0849ac2c3810e11c702b36a8))
+- **deps**: update module github.com/onsi/ginkgo/v2 to v2.32.2 (#49) ([66e5346](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/66e5346e27fa604e43a8533a3dd44a9eddd9f0ab))
+- **deps**: update module github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring to v0.94.0 (#50) ([70f59bf](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/70f59bf3af8e44d06445312d4bc815473bdc6cc0))
+- **deps**: update module sigs.k8s.io/controller-runtime to v0.25.1 (#51) ([18d61fc](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/18d61fc4d9882c68895480bfb822e47c0596007f))
+- **deps**: update github.com/prometheus/blackbox_exporter digest to feaab45 (#55) ([f6a8934](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/f6a8934af8805b894a497729d1f8e4034731863f))
+- **deps**: update module github.com/onsi/gomega to v1.43.1 (#56) ([18069fa](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/18069faa3f0fbffce83c2f68d36267f295ac5715))
+- **deps**: update module github.com/onsi/ginkgo/v2 to v2.33.0 (#57) ([80f292a](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/80f292a2dd1392d4585d4855a70a2c799ca45c4f))
+- **deps**: update module github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring to v0.94.1 (#58) ([9fe9e14](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/9fe9e14ce9606fb5bf1b86479d8796a442eaf59c))
+- **deps**: update kubernetes deps to v0.37.1 (#59) ([773936d](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/773936d431facae60042e16dfcbadd16d11cb962))
+- **deps**: update module github.com/onsi/gomega to v1.44.0 (#61) ([8225acf](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/8225acf1ceb6c4f9e35a5a8113a118862e8efe15))
+- **deps**: update github.com/prometheus/blackbox_exporter digest to 065fc18 (#62) ([8a685bb](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/8a685bbf9632fd6c02aa32f9bad6c128e95854ee))
+
 ## [v0.2.0](https://github.com/sebastiangaiser/blackbox-exporter-operator/releases/tag/v0.2.0)
 
 [Compare to previous version](https://github.com/sebastiangaiser/blackbox-exporter-operator/compare/v0.1.1...v0.2.0)
