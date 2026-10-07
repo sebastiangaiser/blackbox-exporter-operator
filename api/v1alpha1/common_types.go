@@ -166,7 +166,7 @@ const (
 	DefaultBlackboxExporterRepository = "quay.io/prometheus/blackbox-exporter"
 	// DefaultBlackboxExporterTag is the default container image tag.
 	// renovate: datasource=docker depName=quay.io/prometheus/blackbox-exporter
-	DefaultBlackboxExporterTag = "v0.28.0"
+	DefaultBlackboxExporterTag = "v0.29.0"
 )
 
 // ImageSpec defines the container image for the blackbox-exporter.
