@@ -1,5 +1,30 @@
 # Changelog
 
+## [v0.2.1](https://github.com/sebastiangaiser/blackbox-exporter-operator/releases/tag/v0.2.1)
+
+[Compare to previous version](https://github.com/sebastiangaiser/blackbox-exporter-operator/compare/v0.2.0...v0.2.1)
+
+### Bug Fixes
+
+- **deps**: update github.com/prometheus/blackbox_exporter digest to 3302be1 (#47) ([5bd3acb](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/5bd3acb6edb0323b0849ac2c3810e11c702b36a8))
+- **deps**: update module github.com/onsi/ginkgo/v2 to v2.32.2 (#49) ([66e5346](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/66e5346e27fa604e43a8533a3dd44a9eddd9f0ab))
+- **deps**: update module github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring to v0.94.0 (#50) ([70f59bf](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/70f59bf3af8e44d06445312d4bc815473bdc6cc0))
+- **deps**: update module sigs.k8s.io/controller-runtime to v0.25.1 (#51) ([18d61fc](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/18d61fc4d9882c68895480bfb822e47c0596007f))
+- **deps**: update github.com/prometheus/blackbox_exporter digest to feaab45 (#55) ([f6a8934](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/f6a8934af8805b894a497729d1f8e4034731863f))
+- **deps**: update module github.com/onsi/gomega to v1.43.1 (#56) ([18069fa](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/18069faa3f0fbffce83c2f68d36267f295ac5715))
+- **deps**: update module github.com/onsi/ginkgo/v2 to v2.33.0 (#57) ([80f292a](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/80f292a2dd1392d4585d4855a70a2c799ca45c4f))
+- **deps**: update module github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring to v0.94.1 (#58) ([9fe9e14](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/9fe9e14ce9606fb5bf1b86479d8796a442eaf59c))
+- **deps**: update kubernetes deps to v0.37.1 (#59) ([773936d](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/773936d431facae60042e16dfcbadd16d11cb962))
+- **deps**: update module github.com/onsi/gomega to v1.44.0 (#61) ([8225acf](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/8225acf1ceb6c4f9e35a5a8113a118862e8efe15))
+- **deps**: update github.com/prometheus/blackbox_exporter digest to 065fc18 (#62) ([8a685bb](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/8a685bbf9632fd6c02aa32f9bad6c128e95854ee))
+- **deps**: update module github.com/prometheus/common to v0.72.0 (#63) ([4345bbb](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/4345bbbb2275d543305d67257ecefd86508e17aa))
+- **deps**: update github.com/prometheus/blackbox_exporter digest to 058f03a (#64) ([a787cdf](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/a787cdf4df77fbc368ab52bdc8edad96971d69b3))
+- **deps**: update github.com/prometheus/blackbox_exporter digest to 2bd1bf8 (#65) ([6cf1340](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/6cf1340f19aaa7773b6def4aed8fc010b3f5e922))
+- **deps**: update module sigs.k8s.io/controller-runtime to v0.25.2 (#66) ([2d6c245](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/2d6c24583ba08a0e4584be6cefba4d2732475d93))
+- **deps**: update github.com/prometheus/blackbox_exporter digest to 46909e3 (#67) ([fd701ec](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/fd701ec58b3c7b6bd70ae2b17c815311690e46b7))
+- **deps**: update module github.com/prometheus/blackbox_exporter to v0.29.0 (#69) ([09ad5b1](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/09ad5b1df1a136c5aa9a189918d854bd19534833))
+- **deps**: update module github.com/onsi/ginkgo/v2 to v2.33.1 (#71) ([d7e9355](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/d7e9355cec9950d96bc2834616f21fffb64764d9))
+
 ## [v0.2.0](https://github.com/sebastiangaiser/blackbox-exporter-operator/releases/tag/v0.2.0)
 
 [Compare to previous version](https://github.com/sebastiangaiser/blackbox-exporter-operator/compare/v0.1.1...v0.2.0)
