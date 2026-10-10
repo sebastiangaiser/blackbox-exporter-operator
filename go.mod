@@ -3,7 +3,7 @@ module github.com/sebastiangaiser/blackbox-exporter-operator
 go 1.26.5
 
 require (
-	github.com/onsi/ginkgo/v2 v2.33.0
+	github.com/onsi/ginkgo/v2 v2.33.1
 	github.com/onsi/gomega v1.44.0
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.94.1
 	github.com/prometheus/blackbox_exporter v0.29.0
