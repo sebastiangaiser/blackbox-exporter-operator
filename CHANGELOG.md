@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.2.2](https://github.com/sebastiangaiser/blackbox-exporter-operator/releases/tag/v0.2.2)
+
+[Compare to previous version](https://github.com/sebastiangaiser/blackbox-exporter-operator/compare/v0.2.1...v0.2.2)
+
+### Bug Fixes
+
+- **deps**: update module github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring to v0.94.2 (#77) ([eb11339](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/eb113399a1cd05b3e3437045c00415802bc13b9f))
+- **deps**: update k8s.io/utils digest to ca04ba5 (#80) ([07336de](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/07336de2ae5185914b60d5a854bd4b7754c48052))
+- **deps**: update kubernetes deps to v0.37.2 (#81) ([3e282fd](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/3e282fde81ff7d97d938c8e32354365ce1499597))
+- **deps**: update module github.com/prometheus/common to v0.73.0 (#82) ([cc3f9e5](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/cc3f9e500669f2d5035d79033152d8acccebce72))
+- **deps**: update module github.com/prometheus/common to v0.73.1 (#83) ([d0238a3](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/d0238a3ab443684cc6c3c473c65b47c0b0f60a95))
+
 ## [v0.2.1](https://github.com/sebastiangaiser/blackbox-exporter-operator/releases/tag/v0.2.1)
 
 [Compare to previous version](https://github.com/sebastiangaiser/blackbox-exporter-operator/compare/v0.2.0...v0.2.1)
