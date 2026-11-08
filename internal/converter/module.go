@@ -7,7 +7,7 @@ import (
 
 	bbconfig "github.com/prometheus/blackbox_exporter/config"
 	promconfig "github.com/prometheus/common/config"
-	"go.yaml.in/yaml/v3"
+	"go.yaml.in/yaml/v4"
 
 	monitoringv1alpha1 "github.com/sebastiangaiser/blackbox-exporter-operator/api/v1alpha1"
 )
