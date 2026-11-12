@@ -3,6 +3,7 @@ package converter
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -58,7 +59,7 @@ func ResolveModuleSecrets(ctx context.Context, c client.Reader, namespace string
 		if err != nil {
 			return nil, fmt.Errorf("resolving authorization.credentialsRef: %w", err)
 		}
-		resolved.AuthorizationCredentials = val
+		resolved.AuthorizationCredentials = strings.TrimSpace(val)
 	}
 
 	tlsConfig := spec.HTTP.TLSConfig

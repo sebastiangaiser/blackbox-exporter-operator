@@ -55,19 +55,38 @@ spec:
     failIfHeaderMatchesRegexp: []
     failIfHeaderNotMatchesRegexp: []
     body: ""
+    # At most one authentication method may be set. The alternatives are:
+    #   authorization: Authorization header with a bearer token
+    #   oauth2: OAuth2 client credentials
     basicAuth:
       username: user
       passwordRef:
         name: blackbox-secrets
         key: password
-    oauth2:
-      clientID: my-client
-      clientSecretRef:
-        name: blackbox-secrets
-        key: oauth-secret
-      tokenURL: https://auth.example.com/token
-      scopes: []
 ```
+
+Using a bearer token instead of basic auth:
+
+```yaml
+apiVersion: monitoring.gaiser.bayern/v1alpha1
+kind: BlackboxModule
+metadata:
+  name: http-bearer
+  namespace: monitoring
+  labels:
+    exporter: main
+spec:
+  timeout: 5s
+  http:
+    method: GET
+    authorization:
+      type: Bearer
+      credentialsRef:
+        name: blackbox-secrets
+        key: token
+```
+
+> **Note:** `http.authorization` sets the `Authorization` header the exporter sends to the **probed target**. It is unrelated to the credentials Prometheus uses to scrape the exporter itself, which are configured on the `Probe` custom resource.
 
 ### TCP
 
@@ -221,8 +240,11 @@ Secret-backed fields:
 | `http.basicAuth.passwordRef` | `http.basic_auth.password` |
 | `http.authorization.credentialsRef` | `http.authorization.credentials` |
 | `http.oauth2.clientSecretRef` | `http.oauth2.client_secret` |
-| `tlsConfig.keyRef` | `tls_config.key` (HTTP, TCP, gRPC) |
-| `tlsConfig.caRef` / `tlsConfig.certRef` | `tls_config.ca` / `tls_config.cert` |
+| `http.tlsConfig.certRef` | `http.tls_config.cert` |
+| `http.tlsConfig.keyRef` | `http.tls_config.key` |
+| `http.tlsConfig.caRef` | `http.tls_config.ca` |
+
+> **Note:** TLS secret references are currently only resolved for HTTP modules.
 
 ## Field Reference
 
@@ -267,4 +289,7 @@ status:
 - Exactly one of `http`, `tcp`, `dns`, `icmp`, `grpc`, `unix`, `websocket` must be set
 - `spec.timeout` must be a valid Go duration string
 - For HTTP probers, at most one of `http.basicAuth`, `http.authorization` and `http.oauth2` may be set
-- `http.authorization.type` must not be `Basic` (use `http.basicAuth`)
+- `http.authorization.credentialsRef.name` and `http.authorization.credentialsRef.key` are required
+- `http.authorization.type` must not be `Basic` (use `http.basicAuth` instead)
+- `http.oauth2.clientID`, `http.oauth2.tokenURL`, `http.oauth2.clientSecretRef.name` and `http.oauth2.clientSecretRef.key` are required
+

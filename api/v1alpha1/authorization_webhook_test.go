@@ -97,7 +97,7 @@ func TestValidateModuleSpec_AuthMutualExclusion(t *testing.T) {
 	}
 }
 
-func TestValidateModuleSpec_BasicAuthRequiresUsername(t *testing.T) {
+func TestValidateModuleSpec_BasicAuthAllowsEmptyUsername(t *testing.T) {
 	spec := &BlackboxModuleSpec{
 		Timeout: "5s",
 		HTTP: &HTTPProbeConfig{
@@ -106,8 +106,42 @@ func TestValidateModuleSpec_BasicAuthRequiresUsername(t *testing.T) {
 			},
 		},
 	}
-	if _, err := validateModuleSpec(spec); err == nil {
-		t.Fatal("expected error for empty basicAuth username")
+	if _, err := validateModuleSpec(spec); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
+
+func TestValidateModuleSpec_AuthorizationHeaderInHeadersWarns(t *testing.T) {
+	for _, header := range []string{"Authorization", "authorization", "AUTHORIZATION"} {
+		t.Run(header, func(t *testing.T) {
+			spec := authorizationModule(&Authorization{
+				CredentialsRef: SecretKeySelector{Name: "api-token", Key: "token"},
+			})
+			spec.HTTP.Headers = map[string]string{header: "Bearer hardcoded"}
+
+			warnings, err := validateModuleSpec(spec)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if len(warnings) == 0 {
+				t.Fatal("expected a warning for an Authorization header alongside http.authorization")
+			}
+		})
+	}
+}
+
+func TestValidateModuleSpec_HeadersWithoutAuthorizationDoesNotWarn(t *testing.T) {
+	spec := authorizationModule(&Authorization{
+		CredentialsRef: SecretKeySelector{Name: "api-token", Key: "token"},
+	})
+	spec.HTTP.Headers = map[string]string{"User-Agent": "BlackboxExporter"}
+
+	warnings, err := validateModuleSpec(spec)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(warnings) != 0 {
+		t.Fatalf("unexpected warnings: %v", warnings)
 	}
 }
 

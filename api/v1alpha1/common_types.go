@@ -146,13 +146,16 @@ type OAuth2Config struct {
 }
 
 // Authorization configures the Authorization header sent with HTTP requests.
+// It is mutually exclusive with the other HTTP authentication methods.
 type Authorization struct {
-	// type is the authentication scheme.
+	// type is the authentication scheme. Defaults to "Bearer" when empty.
+	// The value "Basic" is rejected; use basicAuth instead.
 	// +optional
 	// +kubebuilder:default="Bearer"
 	Type string `json:"type,omitempty"`
 
-	// credentialsRef references a Secret key containing the credentials.
+	// credentialsRef references a Secret key containing the credentials,
+	// without the "<type> " prefix.
 	// +required
 	CredentialsRef SecretKeySelector `json:"credentialsRef"`
 }

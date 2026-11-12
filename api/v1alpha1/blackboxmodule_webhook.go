@@ -70,15 +70,13 @@ func validateModuleSpec(spec *BlackboxModuleSpec) (admission.Warnings, error) {
 	}
 
 	if spec.HTTP != nil {
-		if err := validateHTTPAuth(spec.HTTP); err != nil {
-			return nil, err
-		}
+		return validateHTTPAuth(spec.HTTP)
 	}
 
 	return nil, nil
 }
 
-func validateHTTPAuth(spec *HTTPProbeConfig) error {
+func validateHTTPAuth(spec *HTTPProbeConfig) (admission.Warnings, error) {
 	configured := 0
 	for _, set := range []bool{spec.BasicAuth != nil, spec.Authorization != nil, spec.OAuth2 != nil} {
 		if set {
@@ -86,39 +84,50 @@ func validateHTTPAuth(spec *HTTPProbeConfig) error {
 		}
 	}
 	if configured > 1 {
-		return fmt.Errorf("at most one of http.basicAuth, http.authorization and http.oauth2 may be configured")
-	}
-
-	if spec.BasicAuth != nil && spec.BasicAuth.Username == "" {
-		return fmt.Errorf("http.basicAuth.username is required")
+		return nil, fmt.Errorf("at most one of http.basicAuth, http.authorization and http.oauth2 may be configured")
 	}
 
 	if auth := spec.Authorization; auth != nil {
 		if auth.CredentialsRef.Name == "" {
-			return fmt.Errorf("http.authorization.credentialsRef.name is required")
+			return nil, fmt.Errorf("http.authorization.credentialsRef.name is required")
 		}
 		if auth.CredentialsRef.Key == "" {
-			return fmt.Errorf("http.authorization.credentialsRef.key is required")
+			return nil, fmt.Errorf("http.authorization.credentialsRef.key is required")
 		}
 		if strings.EqualFold(strings.TrimSpace(auth.Type), "basic") {
-			return fmt.Errorf("http.authorization.type cannot be %q, use http.basicAuth instead", auth.Type)
+			return nil, fmt.Errorf("http.authorization.type cannot be %q, use http.basicAuth instead", auth.Type)
 		}
 	}
 
 	if oauth2 := spec.OAuth2; oauth2 != nil {
 		if oauth2.ClientID == "" {
-			return fmt.Errorf("http.oauth2.clientID is required")
+			return nil, fmt.Errorf("http.oauth2.clientID is required")
 		}
 		if oauth2.TokenURL == "" {
-			return fmt.Errorf("http.oauth2.tokenURL is required")
+			return nil, fmt.Errorf("http.oauth2.tokenURL is required")
 		}
 		if oauth2.ClientSecretRef.Name == "" {
-			return fmt.Errorf("http.oauth2.clientSecretRef.name is required")
+			return nil, fmt.Errorf("http.oauth2.clientSecretRef.name is required")
 		}
 		if oauth2.ClientSecretRef.Key == "" {
-			return fmt.Errorf("http.oauth2.clientSecretRef.key is required")
+			return nil, fmt.Errorf("http.oauth2.clientSecretRef.key is required")
 		}
 	}
 
-	return nil
+	if spec.Authorization != nil && hasHeader(spec.Headers, "Authorization") {
+		return admission.Warnings{
+			"http.headers contains an Authorization header, which overrides the same header set by http.authorization",
+		}, nil
+	}
+
+	return nil, nil
+}
+
+func hasHeader(headers map[string]string, name string) bool {
+	for key := range headers {
+		if strings.EqualFold(key, name) {
+			return true
+		}
+	}
+	return false
 }
