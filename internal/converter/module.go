@@ -69,6 +69,9 @@ func ConvertModule(spec *monitoringv1alpha1.BlackboxModuleSpec, secrets *Resolve
 
 // RenderConfig renders a map of modules into a blackbox.yml YAML byte slice.
 func RenderConfig(modules map[string]bbconfig.Module) ([]byte, error) {
+	promconfig.MarshalSecretValue = true
+	defer func() { promconfig.MarshalSecretValue = false }()
+
 	cfg := bbconfig.Config{
 		Modules: modules,
 	}
@@ -159,6 +162,19 @@ func convertHTTPProbe(spec *monitoringv1alpha1.HTTPProbeConfig, secrets *Resolve
 		}
 		if secrets != nil && secrets.OAuth2ClientSecret != "" {
 			probe.HTTPClientConfig.OAuth2.ClientSecret = promconfig.Secret(secrets.OAuth2ClientSecret)
+		}
+	}
+
+	if spec.Authorization != nil {
+		authType := spec.Authorization.Type
+		if authType == "" {
+			authType = "Bearer"
+		}
+		probe.HTTPClientConfig.Authorization = &promconfig.Authorization{
+			Type: authType,
+		}
+		if secrets != nil && secrets.AuthorizationCredentials != "" {
+			probe.HTTPClientConfig.Authorization.Credentials = promconfig.Secret(secrets.AuthorizationCredentials)
 		}
 	}
 

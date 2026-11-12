@@ -3,6 +3,7 @@ package converter
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -15,6 +16,8 @@ import (
 type ResolvedSecrets struct {
 	// BasicAuth password.
 	BasicAuthPassword string
+	// Authorization credentials.
+	AuthorizationCredentials string
 	// OAuth2 client secret.
 	OAuth2ClientSecret string
 	// TLS CA certificate PEM.
@@ -49,6 +52,14 @@ func ResolveModuleSecrets(ctx context.Context, c client.Reader, namespace string
 			return nil, fmt.Errorf("resolving oauth2.clientSecretRef: %w", err)
 		}
 		resolved.OAuth2ClientSecret = val
+	}
+
+	if spec.HTTP.Authorization != nil {
+		val, err := resolveSecretKey(ctx, c, namespace, &spec.HTTP.Authorization.CredentialsRef)
+		if err != nil {
+			return nil, fmt.Errorf("resolving authorization.credentialsRef: %w", err)
+		}
+		resolved.AuthorizationCredentials = strings.TrimSpace(val)
 	}
 
 	tlsConfig := spec.HTTP.TLSConfig

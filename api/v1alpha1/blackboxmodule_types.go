@@ -105,10 +105,17 @@ type HTTPProbeConfig struct {
 	TLSConfig *TLSConfig `json:"tlsConfig,omitempty"`
 
 	// basicAuth configures HTTP basic authentication.
+	// Mutually exclusive with authorization and oauth2.
 	// +optional
 	BasicAuth *BasicAuth `json:"basicAuth,omitempty"`
 
+	// authorization configures the Authorization header sent with each request.
+	// Mutually exclusive with basicAuth and oauth2.
+	// +optional
+	Authorization *Authorization `json:"authorization,omitempty"`
+
 	// oauth2 configures OAuth2 client credentials.
+	// Mutually exclusive with basicAuth and authorization.
 	// +optional
 	OAuth2 *OAuth2Config `json:"oauth2,omitempty"`
 

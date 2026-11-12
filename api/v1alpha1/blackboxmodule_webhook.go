@@ -3,6 +3,7 @@ package v1alpha1
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
@@ -68,5 +69,65 @@ func validateModuleSpec(spec *BlackboxModuleSpec) (admission.Warnings, error) {
 		return nil, fmt.Errorf("dns.queryName is required")
 	}
 
+	if spec.HTTP != nil {
+		return validateHTTPAuth(spec.HTTP)
+	}
+
 	return nil, nil
+}
+
+func validateHTTPAuth(spec *HTTPProbeConfig) (admission.Warnings, error) {
+	configured := 0
+	for _, set := range []bool{spec.BasicAuth != nil, spec.Authorization != nil, spec.OAuth2 != nil} {
+		if set {
+			configured++
+		}
+	}
+	if configured > 1 {
+		return nil, fmt.Errorf("at most one of http.basicAuth, http.authorization and http.oauth2 may be configured")
+	}
+
+	if auth := spec.Authorization; auth != nil {
+		if auth.CredentialsRef.Name == "" {
+			return nil, fmt.Errorf("http.authorization.credentialsRef.name is required")
+		}
+		if auth.CredentialsRef.Key == "" {
+			return nil, fmt.Errorf("http.authorization.credentialsRef.key is required")
+		}
+		if strings.EqualFold(strings.TrimSpace(auth.Type), "basic") {
+			return nil, fmt.Errorf("http.authorization.type cannot be %q, use http.basicAuth instead", auth.Type)
+		}
+	}
+
+	if oauth2 := spec.OAuth2; oauth2 != nil {
+		if oauth2.ClientID == "" {
+			return nil, fmt.Errorf("http.oauth2.clientID is required")
+		}
+		if oauth2.TokenURL == "" {
+			return nil, fmt.Errorf("http.oauth2.tokenURL is required")
+		}
+		if oauth2.ClientSecretRef.Name == "" {
+			return nil, fmt.Errorf("http.oauth2.clientSecretRef.name is required")
+		}
+		if oauth2.ClientSecretRef.Key == "" {
+			return nil, fmt.Errorf("http.oauth2.clientSecretRef.key is required")
+		}
+	}
+
+	if spec.Authorization != nil && hasHeader(spec.Headers, "Authorization") {
+		return admission.Warnings{
+			"http.headers contains an Authorization header, which overrides the same header set by http.authorization",
+		}, nil
+	}
+
+	return nil, nil
+}
+
+func hasHeader(headers map[string]string, name string) bool {
+	for key := range headers {
+		if strings.EqualFold(key, name) {
+			return true
+		}
+	}
+	return false
 }
