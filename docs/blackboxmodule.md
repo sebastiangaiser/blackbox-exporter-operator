@@ -214,6 +214,16 @@ passwordRef:
 
 The operator reads the secret value and injects it into the rendered configuration. The ConfigMap contains the resolved value -- use sealed-secrets or external-secrets for secret management.
 
+Secret-backed fields:
+
+| Field | Rendered as |
+|-------|-------------|
+| `http.basicAuth.passwordRef` | `http.basic_auth.password` |
+| `http.authorization.credentialsRef` | `http.authorization.credentials` |
+| `http.oauth2.clientSecretRef` | `http.oauth2.client_secret` |
+| `tlsConfig.keyRef` | `tls_config.key` (HTTP, TCP, gRPC) |
+| `tlsConfig.caRef` / `tlsConfig.certRef` | `tls_config.ca` / `tls_config.cert` |
+
 ## Field Reference
 
 | Field | Type | Default | Description |
@@ -256,3 +266,5 @@ status:
 
 - Exactly one of `http`, `tcp`, `dns`, `icmp`, `grpc`, `unix`, `websocket` must be set
 - `spec.timeout` must be a valid Go duration string
+- For HTTP probers, at most one of `http.basicAuth`, `http.authorization` and `http.oauth2` may be set
+- `http.authorization.type` must not be `Basic` (use `http.basicAuth`)

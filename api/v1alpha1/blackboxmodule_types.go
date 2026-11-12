@@ -108,6 +108,10 @@ type HTTPProbeConfig struct {
 	// +optional
 	BasicAuth *BasicAuth `json:"basicAuth,omitempty"`
 
+	// authorization configures the Authorization header sent with each request.
+	// +optional
+	Authorization *Authorization `json:"authorization,omitempty"`
+
 	// oauth2 configures OAuth2 client credentials.
 	// +optional
 	OAuth2 *OAuth2Config `json:"oauth2,omitempty"`

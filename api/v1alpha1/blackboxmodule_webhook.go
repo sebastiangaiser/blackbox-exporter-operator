@@ -3,6 +3,7 @@ package v1alpha1
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
@@ -68,5 +69,56 @@ func validateModuleSpec(spec *BlackboxModuleSpec) (admission.Warnings, error) {
 		return nil, fmt.Errorf("dns.queryName is required")
 	}
 
+	if spec.HTTP != nil {
+		if err := validateHTTPAuth(spec.HTTP); err != nil {
+			return nil, err
+		}
+	}
+
 	return nil, nil
+}
+
+func validateHTTPAuth(spec *HTTPProbeConfig) error {
+	configured := 0
+	for _, set := range []bool{spec.BasicAuth != nil, spec.Authorization != nil, spec.OAuth2 != nil} {
+		if set {
+			configured++
+		}
+	}
+	if configured > 1 {
+		return fmt.Errorf("at most one of http.basicAuth, http.authorization and http.oauth2 may be configured")
+	}
+
+	if spec.BasicAuth != nil && spec.BasicAuth.Username == "" {
+		return fmt.Errorf("http.basicAuth.username is required")
+	}
+
+	if auth := spec.Authorization; auth != nil {
+		if auth.CredentialsRef.Name == "" {
+			return fmt.Errorf("http.authorization.credentialsRef.name is required")
+		}
+		if auth.CredentialsRef.Key == "" {
+			return fmt.Errorf("http.authorization.credentialsRef.key is required")
+		}
+		if strings.EqualFold(strings.TrimSpace(auth.Type), "basic") {
+			return fmt.Errorf("http.authorization.type cannot be %q, use http.basicAuth instead", auth.Type)
+		}
+	}
+
+	if oauth2 := spec.OAuth2; oauth2 != nil {
+		if oauth2.ClientID == "" {
+			return fmt.Errorf("http.oauth2.clientID is required")
+		}
+		if oauth2.TokenURL == "" {
+			return fmt.Errorf("http.oauth2.tokenURL is required")
+		}
+		if oauth2.ClientSecretRef.Name == "" {
+			return fmt.Errorf("http.oauth2.clientSecretRef.name is required")
+		}
+		if oauth2.ClientSecretRef.Key == "" {
+			return fmt.Errorf("http.oauth2.clientSecretRef.key is required")
+		}
+	}
+
+	return nil
 }
