@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.2.2](https://github.com/sebastiangaiser/blackbox-exporter-operator/releases/tag/v0.2.2)
+
+[Compare to previous version](https://github.com/sebastiangaiser/blackbox-exporter-operator/compare/v0.2.1...v0.2.2)
+
+### Bug Fixes
+
+- **deps**: update module github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring to v0.94.2 (#77) ([eb11339](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/eb113399a1cd05b3e3437045c00415802bc13b9f))
+- **deps**: update k8s.io/utils digest to ca04ba5 (#80) ([07336de](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/07336de2ae5185914b60d5a854bd4b7754c48052))
+- **deps**: update kubernetes deps to v0.37.2 (#81) ([3e282fd](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/3e282fde81ff7d97d938c8e32354365ce1499597))
+- **deps**: update module github.com/prometheus/common to v0.73.0 (#82) ([cc3f9e5](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/cc3f9e500669f2d5035d79033152d8acccebce72))
+- **deps**: update module github.com/prometheus/common to v0.73.1 (#83) ([d0238a3](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/d0238a3ab443684cc6c3c473c65b47c0b0f60a95))
+- **deps**: update module go.yaml.in/yaml/v3 to v3.0.6 (#84) ([b441d48](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/b441d48dee33e8788ebef83a168f95366999af0a))
+- **deps**: update module github.com/onsi/ginkgo/v2 to v2.34.0 (#85) ([46186ea](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/46186ea8f959e1a43764891b8662681ac727c74c))
+- **deps**: update module github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring to v0.95.0 (#86) ([d07dd30](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/d07dd30aafbaed95fbe75dcf57bff06d0f11f67e))
+- **deps**: update module github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring to v0.95.1 (#89) ([0a69a26](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/0a69a26fb6f873de48aef0641071160059db7357))
+- **deps**: migrate to go.yaml.in/yaml/v4 (#91) ([7e21be9](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/7e21be9d2d269ed629f2da7f5416f4866dbe3f8b))
+- **deps**: update module github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring to v0.95.2 (#93) ([5495b8e](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/5495b8e06c510f37fad30cbecf674be2f99aed65))
+- **deps**: update module github.com/prometheus/common to v0.74.0 (#96) ([41be134](https://github.com/sebastiangaiser/blackbox-exporter-operator/commit/41be134d93bf5c8cac1ee6990bff05a4d766a135))
+
 ## [v0.2.1](https://github.com/sebastiangaiser/blackbox-exporter-operator/releases/tag/v0.2.1)
 
 [Compare to previous version](https://github.com/sebastiangaiser/blackbox-exporter-operator/compare/v0.2.0...v0.2.1)
