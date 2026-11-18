@@ -145,6 +145,21 @@ type OAuth2Config struct {
 	Scopes []string `json:"scopes,omitempty"`
 }
 
+// Authorization configures the Authorization header sent with HTTP requests.
+// It is mutually exclusive with the other HTTP authentication methods.
+type Authorization struct {
+	// type is the authentication scheme. Defaults to "Bearer" when empty.
+	// The value "Basic" is rejected; use basicAuth instead.
+	// +optional
+	// +kubebuilder:default="Bearer"
+	Type string `json:"type,omitempty"`
+
+	// credentialsRef references a Secret key containing the credentials,
+	// without the "<type> " prefix.
+	// +required
+	CredentialsRef SecretKeySelector `json:"credentialsRef"`
+}
+
 // ServiceMonitorConfig configures the optional ServiceMonitor.
 type ServiceMonitorConfig struct {
 	// enabled controls whether a ServiceMonitor is created.
