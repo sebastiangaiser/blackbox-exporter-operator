@@ -243,8 +243,39 @@ spec:
               http:
                 description: http configures an HTTP prober.
                 properties:
+                  authorization:
+                    description: |-
+                      authorization configures the Authorization header sent with each request.
+                      Mutually exclusive with basicAuth and oauth2.
+                    properties:
+                      credentialsRef:
+                        description: |-
+                          credentialsRef references a Secret key containing the credentials,
+                          without the "<type> " prefix.
+                        properties:
+                          key:
+                            description: key within the Secret.
+                            type: string
+                          name:
+                            description: name of the Secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      type:
+                        default: Bearer
+                        description: |-
+                          type is the authentication scheme. Defaults to "Bearer" when empty.
+                          The value "Basic" is rejected; use basicAuth instead.
+                        type: string
+                    required:
+                    - credentialsRef
+                    type: object
                   basicAuth:
-                    description: basicAuth configures HTTP basic authentication.
+                    description: |-
+                      basicAuth configures HTTP basic authentication.
+                      Mutually exclusive with authorization and oauth2.
                     properties:
                       passwordRef:
                         description: passwordRef references a Secret key containing
@@ -349,7 +380,9 @@ spec:
                     description: method is the HTTP method to use.
                     type: string
                   oauth2:
-                    description: oauth2 configures OAuth2 client credentials.
+                    description: |-
+                      oauth2 configures OAuth2 client credentials.
+                      Mutually exclusive with basicAuth and authorization.
                     properties:
                       clientID:
                         description: clientID is the OAuth2 client ID.
